@@ -3,27 +3,30 @@
   gather_facts: false
   hosts: localhost
   vars:
-    repo_folder: ~/www/github-deployment/repos/
+    repo_folder: /root/www/github-deployment/repos/
     bundle_file: bundle.zip
-    live_folder: ~/www/slack-pm2-proxy/build
+    live_folder: /root/www/apps/build
 
   tasks:
     - git:
-        repo: git@github.com:purple-seal/slack-pm2-proxy.git
+        repo: git@github.com:koajs/todo.git
         dest: "{{ repo_folder }}"
         update: yes
         force: yes
-    
+
     - name: Install dev dependencies
       npm:
         path: "{{ repo_folder }}"
+
+    - name: Clean node_modules
+      file:
+        state: absent
+        path: "{{ repo_folder }}/node_modules"
 
     - name: Zip all files
       archive:
         path:
         - "{{ repo_folder }}"
-        exclude_path:
-        - "{{ repo_folder }}/node_modules"
         dest: "{{repo_folder}}/{{ bundle_file }}"
         format: zip
 
@@ -32,9 +35,9 @@
         path: "{{ live_folder }}"
         state: directory
         recurse: yes
-      
+
     - name: Copy build to live directory
-      copy: 
+      copy:
         src: "{{repo_folder}}/{{ bundle_file }}"
         dest: "{{ live_folder }}/{{ bundle_file }}"
 
@@ -45,4 +48,7 @@
 
     - name: Install dependencies
       npm:
-        path: "{{ live_folder }}"    
+        path: "{{ live_folder }}"
+
+    - name: Run server
+      command: pm2 start {{ live_folder }}/app.js --name todo
