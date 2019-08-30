@@ -27,6 +27,12 @@
         dest: "{{ bundle_file }}"
         format: zip
 
+    - name: Create build directory
+      file:
+        path: "{{ live_folder }}"
+        state: directory
+        recurse: yes
+      
     - name: Copy build to live directory
       command: cp {{ bundle_file }} {{ live_folder }}
 
