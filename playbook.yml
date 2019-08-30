@@ -4,6 +4,7 @@
   hosts: localhost
   vars:
     repo_folder: ~/www/github-deployment/repos/
+    bundle_file: ~/www/github-deployment/repos/bundle.zip
     live_folder: ~/www/slack-pm2-proxy/build
 
   tasks:
@@ -12,17 +13,28 @@
         dest: "{{ repo_folder }}"
         update: yes
         force: yes
-    - name: Install dependencies
+    
+    - name: Install dev dependencies
       npm:
         path: "{{ repo_folder }}"
-    
-    - name: Create build directory
-      file:
-        path: "{{ live_folder }}"
-        state: directory
-        recurse: yes
-      
+
+    - name: Zip all files
+      archive:
+        path:
+        - "{{ repo_forder }}"
+        exclude_path:
+        - "{{ repo_forder }}/node_modules"
+        dest: "{{ bundle_file }}"
+        format: zip
+
     - name: Copy build to live directory
-      command: cp -TR build {{ live_folder }}
-      args:
-        chdir: "{{ repo_folder }}"  
+      command: cp {{ bundle_file }} {{ live_folder }}
+
+    - name: Unzip bundle
+      unarchive:
+        src: "{{ live_folder }}/bundle.zip"
+        dest: "{{ live_folder }}"
+
+    - name: Install dependencies
+      npm:
+        path: "{{ live_folder }}"    
