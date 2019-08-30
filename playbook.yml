@@ -21,9 +21,9 @@
     - name: Zip all files
       archive:
         path:
-        - "{{ repo_forder }}"
+        - "{{ repo_folder }}"
         exclude_path:
-        - "{{ repo_forder }}/node_modules"
+        - "{{ repo_folder }}/node_modules"
         dest: "{{ bundle_file }}"
         format: zip
 
