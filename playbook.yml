@@ -16,6 +16,9 @@
       npm:
         path: "{{ repo_folder }}"
     
+    - name: Create build directory
+      command: mkdir -p {{ live_folder }}
+      
     - name: Copy build to live directory
       command: cp -TR build {{ live_folder }}
       args:
