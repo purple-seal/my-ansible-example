@@ -1,7 +1,7 @@
-- name: Deploy Slack Bot
+- name: Deploy Slack Bot In Local
   connection: ssh
   gather_facts: false
-  hosts: all
+  hosts: localhost
   vars:
     repo_folder: ~/www/github-deployment/repos/
     live_folder: ~/www/slack-pm2-proxy/build
