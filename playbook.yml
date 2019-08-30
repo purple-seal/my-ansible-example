@@ -17,7 +17,10 @@
         path: "{{ repo_folder }}"
     
     - name: Create build directory
-      command: mkdir -p {{ live_folder }}
+      file:
+        path: "{{ live_folder }}"
+        state: directory
+        recurse: yes
       
     - name: Copy build to live directory
       command: cp -TR build {{ live_folder }}
