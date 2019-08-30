@@ -1,0 +1,60 @@
+- name: Deploy Slack Bot In Local
+  connection: ssh
+  gather_facts: false
+  hosts: localhost
+  vars:
+    repo_folder: /root/www/github-deployment/repos/
+    bundle_file: bundle.zip
+
+  tasks:
+    - git:
+        repo: git@github.com:koajs/todo.git
+        dest: "{{ repo_folder }}"
+        update: yes
+        force: yes
+
+    - name: Install dev dependencies
+      npm:
+        path: "{{ repo_folder }}"
+
+    - name: Clean node_modules
+      file:
+        state: absent
+        path: "{{ repo_folder }}/node_modules"
+
+    - name: Zip all files
+      archive:
+        path:
+        - "{{ repo_folder }}"
+        dest: "{{repo_folder}}/{{ bundle_file }}"
+        format: zip
+
+    - name: Copy build to live directory
+      command: scp {{repo_folder}}/{{ bundle_file }} gotivia@10.41.15.140:~
+
+- name: Run server
+  hosts: tripbtoz_web
+  remote_user: gotivia
+  connection: ssh
+  vars:
+    bundle_file: /home/gotivia/bundle.zip
+    live_folder: /home/gotivia/www/apps/build
+
+  tasks:
+    - name: Create build directory
+      file:
+        path: "{{ live_folder }}"
+        state: directory
+        recurse: yes
+    - name: Unzip bundle
+      unarchive:
+        src: "{{ bundle_file }}"
+        dest: "{{ live_folder }}"
+        remote_src: yes
+
+    - name: Install dependencies
+      npm:
+        path: "{{ live_folder }}"
+
+    - name: Run server
+      command: pm2 start {{ live_folder }}/app.js --name todo
