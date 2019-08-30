@@ -13,10 +13,10 @@
         dest: "{{ repo_folder }}"
         update: yes
     - name: Install dependencies
-        npm:
-          path: "{{ repo_folder }}"
+      npm:
+        path: "{{ repo_folder }}"
     
     - name: Copy build to live directory
-        command: cp -TR build {{ live_folder }}
-        args:
-          chdir: "{{ repo_folder }}"  
+      command: cp -TR build {{ live_folder }}
+      args:
+        chdir: "{{ repo_folder }}"  
