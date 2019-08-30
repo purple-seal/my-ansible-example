@@ -8,7 +8,7 @@
 
   tasks:
     - git:
-        repo: ssh://git@github.com:purple-seal/slack-pm2-proxy.git
+        repo: git@github.com:purple-seal/slack-pm2-proxy.git
         dest: "{{ repo_folder }}"
         update: yes
     - name: Install dependencies
