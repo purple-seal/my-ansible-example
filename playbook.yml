@@ -3,9 +3,8 @@
   gather_facts: false
   hosts: all
   vars:
-    repo_folder: /var/www/github-deployment/repos/
-    live_folder: /var/www/slack-pm2-proxy/build
-    repo_name: USERNAME/REPOSITORY
+    repo_folder: ~/www/github-deployment/repos/
+    live_folder: ~/www/slack-pm2-proxy/build
 
   tasks:
     - git:
