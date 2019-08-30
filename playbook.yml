@@ -4,7 +4,7 @@
   hosts: localhost
   vars:
     repo_folder: ~/www/github-deployment/repos/
-    bundle_file: ~/www/github-deployment/repos/bundle.zip
+    bundle_file: bundle.zip
     live_folder: ~/www/slack-pm2-proxy/build
 
   tasks:
@@ -24,7 +24,7 @@
         - "{{ repo_folder }}"
         exclude_path:
         - "{{ repo_folder }}/node_modules"
-        dest: "{{ bundle_file }}"
+        dest: "{{repo_folder}}/{{ bundle_file }}"
         format: zip
 
     - name: Create build directory
@@ -34,11 +34,13 @@
         recurse: yes
       
     - name: Copy build to live directory
-      command: cp {{ bundle_file }} {{ live_folder }}
+      copy: 
+        src: "{{repo_folder}}/{{ bundle_file }}"
+        dest: "{{ live_folder }}/{{ bundle_file }}"
 
     - name: Unzip bundle
       unarchive:
-        src: "{{ live_folder }}/bundle.zip"
+        src: "{{ live_folder }}/{{ bundle_file }}"
         dest: "{{ live_folder }}"
 
     - name: Install dependencies
