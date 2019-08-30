@@ -1,0 +1,22 @@
+- name: Deploy Slack Bot
+  connection: ssh
+  gather_facts: false
+  hosts: all
+  vars:
+    repo_folder: /var/www/github-deployment/repos/
+    live_folder: /var/www/slack-pm2-proxy/build
+    repo_name: USERNAME/REPOSITORY
+
+  tasks:
+    - git:
+        repo: ssh://git@github.com:purple-seal/slack-pm2-proxy.git
+        dest: "{{ repo_folder }}"
+        update: yes
+    - name: Install dependencies
+        npm:
+          path: "{{ repo_folder }}"
+    
+    - name: Copy build to live directory
+        command: cp -TR build {{ live_folder }}
+        args:
+          chdir: "{{ repo_folder }}"  
