@@ -11,6 +11,7 @@
         repo: git@github.com:purple-seal/slack-pm2-proxy.git
         dest: "{{ repo_folder }}"
         update: yes
+        force: yes
     - name: Install dependencies
       npm:
         path: "{{ repo_folder }}"
