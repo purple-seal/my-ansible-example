@@ -57,4 +57,4 @@
         path: "{{ live_folder }}"
 
     - name: Run server
-      command: pm2 startOrRestart {{ live_folder }}/app.js --name todo
+      command: pm2 restart {{ live_folder }}/app.js --name todo
